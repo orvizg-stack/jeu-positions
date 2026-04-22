@@ -2,349 +2,422 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeu Positions 4 Joueurs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Jeu Positions 😈</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: linear-gradient(135deg, #000 0%, #1a0033 50%, #000 100%);
+            background: #000;
             color: #fff;
             font-family: 'Courier New', monospace;
-            overflow: hidden;
             height: 100vh;
-        }
-        .container {
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            padding: 20px;
-            gap: 20px;
         }
         .header {
             text-align: center;
-            font-size: 24px;
-            text-shadow: 0 0 10px #ff00ff;
+            padding: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
             animation: glow 2s infinite alternate;
+            flex-shrink: 0;
         }
         @keyframes glow {
             from { text-shadow: 0 0 10px #ff00ff; }
-            to { text-shadow: 0 0 20px #00ffff, 0 0 30px #ff00ff; }
+            to { text-shadow: 0 0 25px #00ffff, 0 0 40px #ff00ff; }
         }
         .players {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            padding: 0 15px;
+            flex-shrink: 0;
         }
         .player-input {
-            background: rgba(0,0,0,0.7);
+            background: rgba(255,0,255,0.1);
             border: 2px solid #ff00ff;
             border-radius: 10px;
-            padding: 15px;
+            padding: 10px;
             text-align: center;
-            font-size: 18px;
-            color: #00ffff;
-            text-shadow: 0 0 5px #00ffff;
+            font-size: 16px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            outline: none;
         }
+        .player-input::placeholder { color: rgba(255,0,255,0.5); }
         .panels {
             display: flex;
-            gap: 20px;
+            gap: 15px;
+            padding: 15px;
             flex: 1;
             align-items: center;
-            justify-content: center;
         }
         .panel {
-            background: rgba(0,0,0,0.8);
-            border: 3px solid;
+            flex: 1;
+            background: rgba(0,0,0,0.9);
             border-radius: 20px;
-            padding: 30px;
+            padding: 20px 15px;
             text-align: center;
-            min-width: 200px;
-            box-shadow: 0 0 30px rgba(255,0,255,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
-        .panel1 { border-color: #ff1493; }
-        .panel2 { border-color: #00ffff; }
+        .panel1 { border: 3px solid #ff1493; box-shadow: 0 0 20px rgba(255,20,147,0.4); }
+        .panel2 { border: 3px solid #00ffff; box-shadow: 0 0 20px rgba(0,255,255,0.4); }
         .panel-title {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px currentColor;
+            letter-spacing: 1px;
         }
+        .panel1 .panel-title { color: #ff1493; text-shadow: 0 0 10px #ff1493; }
+        .panel2 .panel-title { color: #00ffff; text-shadow: 0 0 10px #00ffff; }
         .counter {
-            font-family: 'Digital-7', 'Courier New', monospace;
-            font-size: 80px;
-            font-weight: bold;
-            min-height: 100px;
+            font-size: 90px;
+            font-weight: 900;
+            line-height: 1;
+            min-height: 110px;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-shadow: 0 0 20px currentColor;
-            transition: all 0.3s ease;
+            font-variant-numeric: tabular-nums;
+            transition: color 0.1s;
         }
-        .panel1 .counter { color: #ff1493; }
-        .panel2 .counter { color: #00ffff; }
+        .panel1 .counter { color: #ff1493; text-shadow: 0 0 20px #ff1493; }
+        .panel2 .counter { color: #00ffff; text-shadow: 0 0 20px #00ffff; }
+        .counter.rolling {
+            animation: roll 0.08s infinite;
+        }
+        @keyframes roll {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .counter.final {
+            animation: flashResult 0.4s 4;
+        }
+        @keyframes flashResult {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.1); }
+        }
         .spin-btn {
-            background: linear-gradient(45deg, #ff00ff, #00ffff);
             border: none;
-            color: black;
-            font-weight: bold;
-            padding: 15px 30px;
+            color: #000;
+            font-weight: 900;
+            padding: 14px 24px;
             border-radius: 50px;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
-            margin-top: 20px;
-            box-shadow: 0 0 20px rgba(255,0,255,0.5);
-            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            width: 100%;
         }
-        .spin-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(0,255,255,0.8); }
-        .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .neon-blink {
-            animation: neonBlink 0.5s infinite alternate;
+        .panel1 .spin-btn {
+            background: linear-gradient(45deg, #ff1493, #ff00ff);
+            box-shadow: 0 0 15px rgba(255,20,147,0.6);
         }
-        @keyframes neonBlink {
-            0% { text-shadow: 0 0 20px currentColor; }
-            100% { text-shadow: 0 0 40px currentColor, 0 0 60px currentColor; }
+        .panel2 .spin-btn {
+            background: linear-gradient(45deg, #00ffff, #0088ff);
+            box-shadow: 0 0 15px rgba(0,255,255,0.6);
         }
+        .spin-btn:disabled { opacity: 0.4; }
+
+        /* POPUP */
         .popup {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
+            inset: 0;
+            background: rgba(0,0,0,0.97);
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            backdrop-filter: blur(10px);
+            padding: 30px;
+            text-align: center;
         }
         .popup.active { display: flex; }
-        .popup-title {
-            font-size: 48px;
-            text-align: center;
+
+        /* Popup 1 — Nom position */
+        .popup-num {
+            font-size: 120px;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+        .popup-name {
+            font-size: 42px;
+            font-weight: bold;
+            text-shadow: 0 0 30px currentColor;
+            animation: namePulse 0.8s infinite alternate;
+            line-height: 1.2;
+        }
+        @keyframes namePulse {
+            from { text-shadow: 0 0 20px currentColor; opacity: 0.9; }
+            to { text-shadow: 0 0 50px currentColor, 0 0 80px currentColor; opacity: 1; }
+        }
+        .popup-countdown {
+            margin-top: 30px;
+            font-size: 18px;
+            color: rgba(255,255,255,0.5);
+        }
+        .color1 { color: #ff1493; }
+        .color2 { color: #00ffff; }
+
+        /* Popup 2 — Voir position */
+        .popup2-title {
+            font-size: 28px;
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
+            margin-bottom: 15px;
+        }
+        .popup2-posname {
+            font-size: 36px;
+            font-weight: bold;
             margin-bottom: 40px;
-            text-shadow: 0 0 30px #ff00ff;
-            animation: glow 1s infinite alternate;
         }
         .view-btn {
             background: linear-gradient(45deg, #ff1493, #ff00ff);
             border: none;
-            color: white;
-            font-size: 24px;
+            color: #fff;
+            font-size: 22px;
+            font-weight: bold;
             padding: 20px 40px;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 0 30px rgba(255,20,147,0.8);
-            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(255,0,255,0.7);
+            font-family: 'Courier New', monospace;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 400px;
         }
-        .view-btn:hover { transform: scale(1.1); box-shadow: 0 0 50px rgba(255,0,255,1); }
+        .close-btn {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.6);
+            font-size: 18px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">🎮 JEU POSITIONS 4 JOUEURS 😈</div>
-        
-        <div class="players">
-            <input type="text" class="player-input" placeholder="Joueur 1" id="player1">
-            <input type="text" class="player-input" placeholder="Joueur 2" id="player2">
-            <input type="text" class="player-input" placeholder="Joueur 3" id="player3">
-            <input type="text" class="player-input" placeholder="Joueur 4" id="player4">
-        </div>
 
-        <div class="panels">
-            <div class="panel panel1">
-                <div class="panel-title">👅 AVEC LA BOUCHE</div>
-                <div class="counter" id="counter1">00</div>
-                <button class="spin-btn" onclick="spinCounter(1)">LANCER 1</button>
-            </div>
-            
-            <div class="panel panel2">
-                <div class="panel-title">❌ SANS LA BOUCHE</div>
-                <div class="counter" id="counter2">00</div>
-                <button class="spin-btn" onclick="spinCounter(2)">LANCER 2</button>
-            </div>
-        </div>
+<div class="header">🎮 JEU POSITIONS 😈</div>
+
+<div class="players">
+    <input type="text" class="player-input" placeholder="👤 Joueur 1" id="p1">
+    <input type="text" class="player-input" placeholder="👤 Joueur 2" id="p2">
+    <input type="text" class="player-input" placeholder="👤 Joueur 3" id="p3">
+    <input type="text" class="player-input" placeholder="👤 Joueur 4" id="p4">
+</div>
+
+<div class="panels">
+    <div class="panel panel1">
+        <div class="panel-title">👅 AVEC LA BOUCHE</div>
+        <div class="counter" id="counter1">00</div>
+        <button class="spin-btn" id="btn1" onclick="spin(1)">▶ LANCER</button>
     </div>
-
-    <!-- Popup Position Name -->
-    <div class="popup" id="positionPopup">
-        <div class="popup-title" id="positionName"></div>
+    <div class="panel panel2">
+        <div class="panel-title">❌ SANS LA BOUCHE</div>
+        <div class="counter" id="counter2">00</div>
+        <button class="spin-btn" id="btn2" onclick="spin(2)">▶ LANCER</button>
     </div>
+</div>
 
-    <!-- Popup View Image -->
-    <div class="popup" id="viewPopup">
-        <div style="text-align: center; padding: 40px;">
-            <div style="font-size: 32px; margin-bottom: 30px; color: #ff00ff; text-shadow: 0 0 20px #ff00ff;">
-                📱 Voir la position
-            </div>
-            <button class="view-btn" id="viewPositionBtn">👁️ OUVRIR SUR GAYSEXPOSITIONS 👁️</button>
-        </div>
-    </div>
+<!-- Popup 1 : Nom de la position -->
+<div class="popup" id="popup1">
+    <div class="popup-num" id="popup1-num"></div>
+    <div class="popup-name" id="popup1-name"></div>
+    <div class="popup-countdown" id="popup1-cd">Ouverture dans 5s…</div>
+</div>
 
-    <script>
-        // Listes des positions (tes listes exactes)
-        const positionsAvecBouche = {
-            '01': '69',
-            '02': '69 - Kneeling',
-            '03': '69 - Sideways',
-            '04': '69 - Sitting',
-            '05': '69 - Standing',
-            '06': 'Blowjob - Aerial',
-            '07': 'Blowjob - Bent Supine',
-            '08': 'Blowjob - Bowing',
-            '09': 'Blowjob - Buck',
-            '10': 'Blowjob - Crab',
-            '11': 'Blowjob - Doggy',
-            '12': 'Blowjob - Floor Sitting',
-            '13': 'Sitting - Rimjob',
-            '14': 'Rimjob - Squatting',
-            '15': 'Rimjob - Standing',
-            '16': 'Rimjob - Supine'
-        };
+<!-- Popup 2 : Voir la position -->
+<div class="popup" id="popup2">
+    <div class="popup2-title">👁️ Voir la position</div>
+    <div class="popup2-posname" id="popup2-name"></div>
+    <button class="view-btn" id="viewBtn">🔥 OUVRIR SUR GAYSEXPOSITIONS 🔥</button>
+    <button class="close-btn" onclick="closePopup2()">✖ Fermer</button>
+</div>
 
-        const positionsSansBouche = {
-            '01': 'Afternoon Delight',
-            '02': 'Arch',
-            '03': 'Basset Hound',
-            '04': 'Bend Over',
-            '05': 'Bent Spoons',
-            '06': 'Bodyguard',
-            '07': 'Bodyguard - Elevated',
-            '08': 'Booster Seat',
-            '09': 'Bulldog',
-            '10': 'Bulldog - Reverse',
-            '11': 'Bully',
-            '12': 'Bumper Cars',
-            '13': 'Butterfly',
-            '14': 'Cannonball',
-            '15': 'Cannonball - Sitting',
-            '16': 'Cowboy',
-            '17': 'Cowboy - Asian',
-            '18': 'Cowboy - Reverse',
-            '19': 'Cowboy - Reverse Asian',
-            '20': 'Cowboy - Reverse Standing',
-            '21': 'Cowboy - Sideways',
-            '22': 'Cowboy - Splits',
-            '23': 'Cowboy - Standing',
-            '24': 'Crab',
-            '25': 'Danseur',
-            '26': 'Deep Impact',
-            '27': 'Deep Stick',
-            '28': 'Doggy Style',
-            '29': 'Doggy Style - Elevated',
-            '30': 'Doggy Style - Sideways',
-            '31': 'Doggy Style - Standing',
-            '32': 'Elevated Splits',
-            '33': 'Fire Hydrant',
-            '34': 'Folded Deck Chair',
-            '35': 'Fusion',
-            '36': 'Jockey',
-            '37': 'Jockey - Asian',
-            '38': 'Jockey - Kneeling',
-            '39': 'Jockey - Standing',
-            '40': 'Lap Dance',
-            '41': 'Lap Dance - Asian',
-            '42': 'Lap Dance - Floor',
-            '43': 'Launch Pad',
-            '44': 'Leg Glider',
-            '45': 'Leg Glider - Standing',
-            '46': 'Lotus',
-            '47': 'Mastery',
-            '48': 'Mastery - Kneeling',
-            '49': 'Mastery - Standing',
-            '50': 'Mirror of Pleasure',
-            '51': 'Missionary',
-            '52': 'Missionary - Inverse',
-            '53': 'Mutual Penetration',
-            '54': 'Pearly Gates',
-            '55': 'Pile Driver',
-            '56': 'Pile Driver - Reverse',
-            '57': 'Pile Driver - Sideways',
-            '58': 'Pirate\'s Bounty',
-            '59': 'Pirate\'s Bounty - Elevated',
-            '60': 'Prison Guard',
-            '61': 'Pyramid',
-            '62': 'Rear Entry',
-            '63': 'Rear Entry - Sideways',
-            '64': 'Reverse Bronco',
-            '65': 'Reverse Wheelbarrow',
-            '66': 'Scissors',
-            '67': 'Screw',
-            '68': 'Seesaw',
-            '69': 'Side by Side',
-            '70': 'Sitting Bull',
-            '71': 'Soaring Eagle',
-            '72': 'Soaring Eagle - Reverse',
-            '73': 'Spoons',
-            '74': 'Superman',
-            '75': 'Suspended Congress',
-            '76': 'T-square',
-            '77': 'Teaspoons',
-            '78': 'Warrior',
-            '79': 'Warrior - Reverse',
-            '80': 'Reverse Kneeling Warrior'
-        };
+<script>
+const positionsAvecBouche = {
+  '01': { name: "69", url: "https://gaysexpositions.guide/69/" },
+  '02': { name: "69 - Kneeling", url: "https://gaysexpositions.guide/kneeling-69/" },
+  '03': { name: "69 - Sideways", url: "https://gaysexpositions.guide/sideways-69/" },
+  '04': { name: "69 - Sitting", url: "https://gaysexpositions.guide/sitting-69/" },
+  '05': { name: "69 - Standing", url: "https://gaysexpositions.guide/standing-69/" },
+  '06': { name: "Blowjob - Aerial", url: "https://gaysexpositions.guide/aerial-blowjob/" },
+  '07': { name: "Blowjob - Bent Supine", url: "https://gaysexpositions.guide/bent-supine-blowjob/" },
+  '08': { name: "Blowjob - Bowing", url: "https://gaysexpositions.guide/bowing-blowjob/" },
+  '09': { name: "Blowjob - Buck", url: "https://gaysexpositions.guide/buck-blowjob/" },
+  '10': { name: "Blowjob - Crab", url: "https://gaysexpositions.guide/crab-blowjob/" },
+  '11': { name: "Blowjob - Doggy", url: "https://gaysexpositions.guide/doggy-blowjob/" },
+  '12': { name: "Blowjob - Floor Sitting", url: "https://gaysexpositions.guide/floor-sitting-blowjob/" },
+  '13': { name: "Sitting - Rimjob", url: "https://gaysexpositions.guide/sitting-rimjob/" },
+  '14': { name: "Rimjob - Squatting", url: "https://gaysexpositions.guide/squatting-rimjob/" },
+  '15': { name: "Rimjob - Standing", url: "https://gaysexpositions.guide/standing-rimjob/" },
+  '16': { name: "Rimjob - Supine", url: "https://gaysexpositions.guide/supine-rimjob/" }
+};
 
-        let currentPanel = null;
-        let viewUrl = '';
+const positionsSansBouche = {
+  '01': { name: "Afternoon Delight", url: "https://gaysexpositions.guide/afternoon-delight/" },
+  '02': { name: "Arch", url: "https://gaysexpositions.guide/arch/" },
+  '03': { name: "Basset Hound", url: "https://gaysexpositions.guide/basset-hound/" },
+  '04': { name: "Bend Over", url: "https://gaysexpositions.guide/bend-over/" },
+  '05': { name: "Bent Spoons", url: "https://gaysexpositions.guide/bent-spoons/" },
+  '06': { name: "Bodyguard", url: "https://gaysexpositions.guide/bodyguard/" },
+  '07': { name: "Bodyguard - Elevated", url: "https://gaysexpositions.guide/elevated-bodyguard/" },
+  '08': { name: "Booster Seat", url: "https://gaysexpositions.guide/booster-seat/" },
+  '09': { name: "Bulldog", url: "https://gaysexpositions.guide/bulldog/" },
+  '10': { name: "Bulldog - Reverse", url: "https://gaysexpositions.guide/reverse-bulldog/" },
+  '11': { name: "Bully", url: "https://gaysexpositions.guide/bully/" },
+  '12': { name: "Bumper Cars", url: "https://gaysexpositions.guide/bumper-cars/" },
+  '13': { name: "Butterfly", url: "https://gaysexpositions.guide/butterfly/" },
+  '14': { name: "Cannonball", url: "https://gaysexpositions.guide/cannonball/" },
+  '15': { name: "Cannonball - Sitting", url: "https://gaysexpositions.guide/sitting-cannonball/" },
+  '16': { name: "Cowboy", url: "https://gaysexpositions.guide/cowboy/" },
+  '17': { name: "Cowboy - Asian", url: "https://gaysexpositions.guide/asian-cowboy/" },
+  '18': { name: "Cowboy - Reverse", url: "https://gaysexpositions.guide/reverse-cowboy/" },
+  '19': { name: "Cowboy - Reverse Asian", url: "https://gaysexpositions.guide/reverse-asian-cowboy/" },
+  '20': { name: "Cowboy - Reverse Standing", url: "https://gaysexpositions.guide/reverse-standing-cowboy/" },
+  '21': { name: "Cowboy - Sideways", url: "https://gaysexpositions.guide/sideways-cowboy/" },
+  '22': { name: "Cowboy - Splits", url: "https://gaysexpositions.guide/splits-cowboy/" },
+  '23': { name: "Cowboy - Standing", url: "https://gaysexpositions.guide/standing-cowboy/" },
+  '24': { name: "Crab", url: "https://gaysexpositions.guide/crab/" },
+  '25': { name: "Danseur", url: "https://gaysexpositions.guide/danseur/" },
+  '26': { name: "Deep Impact", url: "https://gaysexpositions.guide/deep-impact/" },
+  '27': { name: "Deep Stick", url: "https://gaysexpositions.guide/deep-stick/" },
+  '28': { name: "Doggy Style", url: "https://gaysexpositions.guide/doggy-style/" },
+  '29': { name: "Doggy Style - Elevated", url: "https://gaysexpositions.guide/elevated-doggy-style/" },
+  '30': { name: "Doggy Style - Sideways", url: "https://gaysexpositions.guide/sideways-doggy-style/" },
+  '31': { name: "Doggy Style - Standing", url: "https://gaysexpositions.guide/standing-doggy-style/" },
+  '32': { name: "Elevated Splits", url: "https://gaysexpositions.guide/elevated-splits/" },
+  '33': { name: "Fire Hydrant", url: "https://gaysexpositions.guide/fire-hydrant/" },
+  '34': { name: "Folded Deck Chair", url: "https://gaysexpositions.guide/folded-deck-chair/" },
+  '35': { name: "Fusion", url: "https://gaysexpositions.guide/fusion/" },
+  '36': { name: "Jockey", url: "https://gaysexpositions.guide/jockey/" },
+  '37': { name: "Jockey - Asian", url: "https://gaysexpositions.guide/asian-jockey/" },
+  '38': { name: "Jockey - Kneeling", url: "https://gaysexpositions.guide/kneeling-jockey/" },
+  '39': { name: "Jockey - Standing", url: "https://gaysexpositions.guide/standing-jockey/" },
+  '40': { name: "Lap Dance", url: "https://gaysexpositions.guide/lap-dance/" },
+  '41': { name: "Lap Dance - Asian", url: "https://gaysexpositions.guide/asian-lap-dance/" },
+  '42': { name: "Lap Dance - Floor", url: "https://gaysexpositions.guide/floor-lap-dance/" },
+  '43': { name: "Launch Pad", url: "https://gaysexpositions.guide/launch-pad/" },
+  '44': { name: "Leg Glider", url: "https://gaysexpositions.guide/leg-glider/" },
+  '45': { name: "Leg Glider - Standing", url: "https://gaysexpositions.guide/standing-leg-glider/" },
+  '46': { name: "Lotus", url: "https://gaysexpositions.guide/lotus/" },
+  '47': { name: "Mastery", url: "https://gaysexpositions.guide/mastery/" },
+  '48': { name: "Mastery - Kneeling", url: "https://gaysexpositions.guide/kneeling-mastery/" },
+  '49': { name: "Mastery - Standing", url: "https://gaysexpositions.guide/standing-mastery/" },
+  '50': { name: "Mirror of Pleasure", url: "https://gaysexpositions.guide/mirror-of-pleasure/" },
+  '51': { name: "Missionary", url: "https://gaysexpositions.guide/missionary/" },
+  '52': { name: "Missionary - Inverse", url: "https://gaysexpositions.guide/inverse-missionary/" },
+  '53': { name: "Mutual Penetration", url: "https://gaysexpositions.guide/mutual-penetration/" },
+  '54': { name: "Pearly Gates", url: "https://gaysexpositions.guide/pearly-gates/" },
+  '55': { name: "Pile Driver", url: "https://gaysexpositions.guide/pile-driver/" },
+  '56': { name: "Pile Driver - Reverse", url: "https://gaysexpositions.guide/reverse-pile-driver/" },
+  '57': { name: "Pile Driver - Sideways", url: "https://gaysexpositions.guide/sideways-pile-driver/" },
+  '58': { name: "Pirate's Bounty", url: "https://gaysexpositions.guide/pirates-bounty/" },
+  '59': { name: "Pirate's Bounty - Elevated", url: "https://gaysexpositions.guide/elevated-pirates-bounty/" },
+  '60': { name: "Prison Guard", url: "https://gaysexpositions.guide/prison-guard/" },
+  '61': { name: "Pyramid", url: "https://gaysexpositions.guide/pyramid/" },
+  '62': { name: "Rear Entry", url: "https://gaysexpositions.guide/rear-entry/" },
+  '63': { name: "Rear Entry - Sideways", url: "https://gaysexpositions.guide/sideways-rear-entry/" },
+  '64': { name: "Reverse Bronco", url: "https://gaysexpositions.guide/reverse-bronco/" },
+  '65': { name: "Reverse Wheelbarrow", url: "https://gaysexpositions.guide/reverse-wheelbarrow/" },
+  '66': { name: "Scissors", url: "https://gaysexpositions.guide/scissors/" },
+  '67': { name: "Screw", url: "https://gaysexpositions.guide/screw/" },
+  '68': { name: "Seesaw", url: "https://gaysexpositions.guide/seesaw/" },
+  '69': { name: "Side by Side", url: "https://gaysexpositions.guide/side-by-side/" },
+  '70': { name: "Sitting Bull", url: "https://gaysexpositions.guide/sitting-bull/" },
+  '71': { name: "Soaring Eagle", url: "https://gaysexpositions.guide/soaring-eagle/" },
+  '72': { name: "Soaring Eagle - Reverse", url: "https://gaysexpositions.guide/reverse-soaring-eagle/" },
+  '73': { name: "Spoons", url: "https://gaysexpositions.guide/spoons/" },
+  '74': { name: "Superman", url: "https://gaysexpositions.guide/superman/" },
+  '75': { name: "Suspended Congress", url: "https://gaysexpositions.guide/suspended-congress/" },
+  '76': { name: "T-square", url: "https://gaysexpositions.guide/t-square/" },
+  '77': { name: "Teaspoons", url: "https://gaysexpositions.guide/teaspoons/" },
+  '78': { name: "Warrior", url: "https://gaysexpositions.guide/warrior/" },
+  '79': { name: "Warrior - Reverse", url: "https://gaysexpositions.guide/reverse-warrior/" },
+  '80': { name: "Reverse Kneeling Warrior", url: "https://gaysexpositions.guide/reverse-kneeling-warrior/" }
+};
 
-        function spinCounter(panel) {
-            const counter = document.getElementById(`counter${panel}`);
-            const btn = event.target;
-            btn.disabled = true;
-            btn.textContent = 'EN COURS...';
-            
-            let num = 0;
-            const interval = setInterval(() => {
-                num = (num + 1) % (panel === 1 ? 17 : 81);
-                counter.textContent = num.toString().padStart(2, '0');
-                counter.classList.add('neon-blink');
-            }, 50);
+let currentUrl = '';
+let cdTimer = null;
 
-            setTimeout(() => {
-                clearInterval(interval);
-                const finalNum = num.toString().padStart(2, '0');
-                counter.textContent = finalNum;
-                counter.classList.remove('neon-blink');
-                
-                // Popup nom position
-                const positions = panel === 1 ? positionsAvecBouche : positionsSansBouche;
-                const positionName = positions[finalNum] || 'Position bonus !';
-                showPositionPopup(positionName, panel, finalNum);
-                
-                btn.disabled = false;
-                btn.textContent = 'LANCER';
-            }, 2000 + Math.random() * 1000);
+function spin(panel) {
+    const counter = document.getElementById('counter' + panel);
+    const btn = document.getElementById('btn' + panel);
+    btn.disabled = true;
+    btn.textContent = '⏳ EN COURS…';
+
+    const maxNum = panel === 1 ? 16 : 80;
+    let i = 0;
+    counter.classList.add('rolling');
+
+    const interval = setInterval(() => {
+        i = (i % maxNum) + 1;
+        counter.textContent = i.toString().padStart(2, '0');
+    }, 60);
+
+    const duration = 2000 + Math.random() * 1500;
+    setTimeout(() => {
+        clearInterval(interval);
+        counter.classList.remove('rolling');
+        counter.classList.add('final');
+
+        const finalNum = i.toString().padStart(2, '0');
+        counter.textContent = finalNum;
+
+        const positions = panel === 1 ? positionsAvecBouche : positionsSansBouche;
+        const pos = positions[finalNum];
+
+        setTimeout(() => {
+            counter.classList.remove('final');
+            btn.disabled = false;
+            btn.textContent = '▶ LANCER';
+            if (pos) showPopup1(finalNum, pos.name, pos.url, panel);
+        }, 1600);
+    }, duration);
+}
+
+function showPopup1(num, name, url, panel) {
+    currentUrl = url;
+    document.getElementById('popup1-num').textContent = num;
+    document.getElementById('popup1-num').className = 'popup-num color' + panel;
+    document.getElementById('popup1-name').textContent = name;
+    document.getElementById('popup1-name').className = 'popup-name color' + panel;
+    document.getElementById('popup2-name').textContent = name;
+    document.getElementById('popup2-name').className = 'popup2-posname color' + panel;
+
+    let secs = 5;
+    document.getElementById('popup1-cd').textContent = 'Ouverture dans ' + secs + 's…';
+    document.getElementById('popup1').classList.add('active');
+
+    cdTimer = setInterval(() => {
+        secs--;
+        document.getElementById('popup1-cd').textContent = secs > 0 ? 'Ouverture dans ' + secs + 's…' : '🔥';
+        if (secs <= 0) {
+            clearInterval(cdTimer);
+            document.getElementById('popup1').classList.remove('active');
+            document.getElementById('popup2').classList.add('active');
         }
+    }, 1000);
+}
 
-        function showPositionPopup(name, panel, num) {
-            document.getElementById('positionName').textContent = name;
-            document.getElementById('positionPopup').classList.add('active');
-            
-            // Prépare URL pour 2ème popup
-            const cleanName = name.toLowerCase().replace(/[^a-z0-9-]/g, '-');
-            viewUrl = `https://gaysexpositions.guide/${cleanName}/`;
-            
-            setTimeout(() => {
-                document.getElementById('positionPopup').classList.remove('active');
-                document.getElementById('viewPopup').classList.add('active');
-            }, 5000);
-        }
+document.getElementById('viewBtn').addEventListener('click', () => {
+    window.open(currentUrl, '_blank');
+});
 
-        document.getElementById('viewPositionBtn').addEventListener('click', () => {
-            window.open(viewUrl, '_blank');
-            document.getElementById('viewPopup').classList.remove('active');
-        });
-
-        // Fermer popups avec clic extérieur
-        document.querySelectorAll('.popup').forEach(popup => {
-            popup.addEventListener('click', (e) => {
-                if (e.target === popup) {
-                    popup.classList.remove('active');
-                }
-            });
-        });
-    </script>
+function closePopup2() {
+    document.getElementById('popup2').classList.remove('active');
+}
+</script>
 </body>
 </html>
