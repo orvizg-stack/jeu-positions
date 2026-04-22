@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu Positions 4 Joueurs</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #000 0%, #1a0033 50%, #000 100%);
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+        .header {
+            text-align: center;
+            font-size: 24px;
+            text-shadow: 0 0 10px #ff00ff;
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ff00ff; }
+            to { text-shadow: 0 0 20px #00ffff, 0 0 30px #ff00ff; }
+        }
+        .players {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .player-input {
+            background: rgba(0,0,0,0.7);
+            border: 2px solid #ff00ff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        .panels {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+        }
+        .panel {
+            background: rgba(0,0,0,0.8);
+            border: 3px solid;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            min-width: 200px;
+            box-shadow: 0 0 30px rgba(255,0,255,0.5);
+        }
+        .panel1 { border-color: #ff1493; }
+        .panel2 { border-color: #00ffff; }
+        .panel-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px currentColor;
+        }
+        .counter {
+            font-family: 'Digital-7', 'Courier New', monospace;
+            font-size: 80px;
+            font-weight: bold;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 20px currentColor;
+            transition: all 0.3s ease;
+        }
+        .panel1 .counter { color: #ff1493; }
+        .panel2 .counter { color: #00ffff; }
+        .spin-btn {
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border: none;
+            color: black;
+            font-weight: bold;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(255,0,255,0.5);
+            transition: all 0.3s;
+        }
+        .spin-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(0,255,255,0.8); }
+        .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .neon-blink {
+            animation: neonBlink 0.5s infinite alternate;
+        }
+        @keyframes neonBlink {
+            0% { text-shadow: 0 0 20px currentColor; }
+            100% { text-shadow: 0 0 40px currentColor, 0 0 60px currentColor; }
+        }
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        .popup.active { display: flex; }
+        .popup-title {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 30px #ff00ff;
+            animation: glow 1s infinite alternate;
+        }
+        .view-btn {
+            background: linear-gradient(45deg, #ff1493, #ff00ff);
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 20px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(255,20,147,0.8);
+            transition: all 0.3s;
+        }
+        .view-btn:hover { transform: scale(1.1); box-shadow: 0 0 50px rgba(255,0,255,1); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">🎮 JEU POSITIONS 4 JOUEURS 😈</div>
+        
+        <div class="players">
+            <input type="text" class="player-input" placeholder="Joueur 1" id="player1">
+            <input type="text" class="player-input" placeholder="Joueur 2" id="player2">
+            <input type="text" class="player-input" placeholder="Joueur 3" id="player3">
+            <input type="text" class="player-input" placeholder="Joueur 4" id="player4">
+        </div>
+
+        <div class="panels">
+            <div class="panel panel1">
+                <div class="panel-title">👅 AVEC LA BOUCHE</div>
+                <div class="counter" id="counter1">00</div>
+                <button class="spin-btn" onclick="spinCounter(1)">LANCER 1</button>
+            </div>
+            
+            <div class="panel panel2">
+                <div class="panel-title">❌ SANS LA BOUCHE</div>
+                <div class="counter" id="counter2">00</div>
+                <button class="spin-btn" onclick="spinCounter(2)">LANCER 2</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Position Name -->
+    <div class="popup" id="positionPopup">
+        <div class="popup-title" id="positionName"></div>
+    </div>
+
+    <!-- Popup View Image -->
+    <div class="popup" id="viewPopup">
+        <div style="text-align: center; padding: 40px;">
+            <div style="font-size: 32px; margin-bottom: 30px; color: #ff00ff; text-shadow: 0 0 20px #ff00ff;">
+                📱 Voir la position
+            </div>
+            <button class="view-btn" id="viewPositionBtn">👁️ OUVRIR SUR GAYSEXPOSITIONS 👁️</button>
+        </div>
+    </div>
+
+    <script>
+        // Listes des positions (tes listes exactes)
+        const positionsAvecBouche = {
+            '01': '69',
+            '02': '69 - Kneeling',
+            '03': '69 - Sideways',
+            '04': '69 - Sitting',
+            '05': '69 - Standing',
+            '06': 'Blowjob - Aerial',
+            '07': 'Blowjob - Bent Supine',
+            '08': 'Blowjob - Bowing',
+            '09': 'Blowjob - Buck',
+            '10': 'Blowjob - Crab',
+            '11': 'Blowjob - Doggy',
+            '12': 'Blowjob - Floor Sitting',
+            '13': 'Sitting - Rimjob',
+            '14': 'Rimjob - Squatting',
+            '15': 'Rimjob - Standing',
+            '16': 'Rimjob - Supine'
+        };
+
+        const positionsSansBouche = {
+            '01': 'Afternoon Delight',
+            '02': 'Arch',
+            '03': 'Basset Hound',
+            '04': 'Bend Over',
+            '05': 'Bent Spoons',
+            '06': 'Bodyguard',
+            '07': 'Bodyguard - Elevated',
+            '08': 'Booster Seat',
+            '09': 'Bulldog',
+            '10': 'Bulldog - Reverse',
+            '11': 'Bully',
+            '12': 'Bumper Cars',
+            '13': 'Butterfly',
+            '14': 'Cannonball',
+            '15': 'Cannonball - Sitting',
+            '16': 'Cowboy',
+            '17': 'Cowboy - Asian',
+            '18': 'Cowboy - Reverse',
+            '19': 'Cowboy - Reverse Asian',
+            '20': 'Cowboy - Reverse Standing',
+            '21': 'Cowboy - Sideways',
+            '22': 'Cowboy - Splits',
+            '23': 'Cowboy - Standing',
+            '24': 'Crab',
+            '25': 'Danseur',
+            '26': 'Deep Impact',
+            '27': 'Deep Stick',
+            '28': 'Doggy Style',
+            '29': 'Doggy Style - Elevated',
+            '30': 'Doggy Style - Sideways',
+            '31': 'Doggy Style - Standing',
+            '32': 'Elevated Splits',
+            '33': 'Fire Hydrant',
+            '34': 'Folded Deck Chair',
+            '35': 'Fusion',
+            '36': 'Jockey',
+            '37': 'Jockey - Asian',
+            '38': 'Jockey - Kneeling',
+            '39': 'Jockey - Standing',
+            '40': 'Lap Dance',
+            '41': 'Lap Dance - Asian',
+            '42': 'Lap Dance - Floor',
+            '43': 'Launch Pad',
+            '44': 'Leg Glider',
+            '45': 'Leg Glider - Standing',
+            '46': 'Lotus',
+            '47': 'Mastery',
+            '48': 'Mastery - Kneeling',
+            '49': 'Mastery - Standing',
+            '50': 'Mirror of Pleasure',
+            '51': 'Missionary',
+            '52': 'Missionary - Inverse',
+            '53': 'Mutual Penetration',
+            '54': 'Pearly Gates',
+            '55': 'Pile Driver',
+            '56': 'Pile Driver - Reverse',
+            '57': 'Pile Driver - Sideways',
+            '58': 'Pirate\'s Bounty',
+            '59': 'Pirate\'s Bounty - Elevated',
+            '60': 'Prison Guard',
+            '61': 'Pyramid',
+            '62': 'Rear Entry',
+            '63': 'Rear Entry - Sideways',
+            '64': 'Reverse Bronco',
+            '65': 'Reverse Wheelbarrow',
+            '66': 'Scissors',
+            '67': 'Screw',
+            '68': 'Seesaw',
+            '69': 'Side by Side',
+            '70': 'Sitting Bull',
+            '71': 'Soaring Eagle',
+            '72': 'Soaring Eagle - Reverse',
+            '73': 'Spoons',
+            '74': 'Superman',
+            '75': 'Suspended Congress',
+            '76': 'T-square',
+            '77': 'Teaspoons',
+            '78': 'Warrior',
+            '79': 'Warrior - Reverse',
+            '80': 'Reverse Kneeling Warrior'
+        };
+
+        let currentPanel = null;
+        let viewUrl = '';
+
+        function spinCounter(panel) {
+            const counter = document.getElementById(`counter${panel}`);
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = 'EN COURS...';
+            
+            let num = 0;
+            const interval = setInterval(() => {
+                num = (num + 1) % (panel === 1 ? 17 : 81);
+                counter.textContent = num.toString().padStart(2, '0');
+                counter.classList.add('neon-blink');
+            }, 50);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                const finalNum = num.toString().padStart(2, '0');
+                counter.textContent = finalNum;
+                counter.classList.remove('neon-blink');
+                
+                // Popup nom position
+                const positions = panel === 1 ? positionsAvecBouche : positionsSansBouche;
+                const positionName = positions[finalNum] || 'Position bonus !';
+                showPositionPopup(positionName, panel, finalNum);
+                
+                btn.disabled = false;
+                btn.textContent = 'LANCER';
+            }, 2000 + Math.random() * 1000);
+        }
+
+        function showPositionPopup(name, panel, num) {
+            document.getElementById('positionName').textContent = name;
+            document.getElementById('positionPopup').classList.add('active');
+            
+            // Prépare URL pour 2ème popup
+            const cleanName = name.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+            viewUrl = `https://gaysexpositions.guide/${cleanName}/`;
+            
+            setTimeout(() => {
+                document.getElementById('positionPopup').classList.remove('active');
+                document.getElementById('viewPopup').classList.add('active');
+            }, 5000);
+        }
+
+        document.getElementById('viewPositionBtn').addEventListener('click', () => {
+            window.open(viewUrl, '_blank');
+            document.getElementById('viewPopup').classList.remove('active');
+        });
+
+        // Fermer popups avec clic extérieur
+        document.querySelectorAll('.popup').forEach(popup => {
+            popup.addEventListener('click', (e) => {
+                if (e.target === popup) {
+                    popup.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
